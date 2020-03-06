@@ -50,9 +50,10 @@ stepSigma = conditionInfo.stepSigma;
 positionSigma = conditionInfo.positionSigma;
 accelerationSigma = conditionInfo.accelSigma;
 
-trialDuration = conditionInfo.trialDuration*1000;
+trialDuration = conditionInfo.trialDuration;
+frameDuration = round((conditionInfo.frameDuration)/(expInfo.frameDur/1000))*(expInfo.frameDur/1000);
 
-nFrames = round(trialDuration/expInfo.frameDur);
+nFrames = round(trialDuration/frameDuration);
 
 keepShowing= true;
 condInfo = [];
@@ -79,7 +80,7 @@ Screen('FillRect',expInfo.curWindow,[0 1 0],readyRect)
 Screen('flip',expInfo.curWindow,GetSecs+.5);
 
 Screen('DrawTexture', expInfo.curWindow, gabortex, [], destRec, 90+tilt, [], [], [], [], kPsychDontDoRotation, [180-phase, freq, sc, contrast, aspectratio, 0, 0, 0]);
-Screen('flip',expInfo.curWindow,GetSecs+.5);
+prevFlipTime = Screen('flip',expInfo.curWindow,GetSecs+.5);
 
 for iFrame=1:nFrames,
     
@@ -92,7 +93,8 @@ for iFrame=1:nFrames,
     % texture via 'DrawTexture', but provide the parameters for the gabor as
     % optional 'auxParameters'.
     Screen('DrawTexture', expInfo.curWindow, gabortex, [], destRec, 90+tilt, [], [], [], [], kPsychDontDoRotation, [180-phase, freq, sc, contrast, aspectratio, 0, 0, 0]);
-    flipT(iFrame) = Screen('flip',expInfo.curWindow);
+    flipT(iFrame) = Screen('flip',expInfo.curWindow,prevFlipTime+frameDuration);
+    prevFlipTime = flipT(iFrame);
     [x,y] = GetMouse(expInfo.curWindow);
     mousePos(iFrame,1) = x;
     mousePos(iFrame,2) = y;
@@ -119,23 +121,26 @@ for iFrame=1:nFrames,
             textureVelocity = textureVelocity + textureAcceleration;
             %Finally move the texture
             textureCenter = textureCenter+textureVelocity;
-    
+      
     end
    
    
     if conditionInfo.bounceOffEdges
         if textureCenter(1)<0 || textureCenter(1)>expInfo.windowSizePixels(1)
-            
+            disp('Bounce')
             textureVelocity(1) = -textureVelocity(1);
              %After resettring the velocity, bring  the texture back. 
             textureCenter = textureCenter+2*textureVelocity;
+       
         end
         
         
         if textureCenter(2)<0 || textureCenter(2)>expInfo.windowSizePixels(2)
+            disp('Bounce')
             textureVelocity(2) = -textureVelocity(2);
              %After resettring the velocity, bring  the texture back. 
             textureCenter = textureCenter+2*textureVelocity;
+           
         end
         
        

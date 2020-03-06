@@ -32,22 +32,23 @@ conditionInfo(1).trialFun=@trial_tracking;
 conditionInfo(1).iti              = 1;
 %How many repititions to run for this condition.
 conditionInfo(1).nReps = 2;
-conditionInfo(1).trialDuration = 5; %trial duration in seconds. 
+conditionInfo(1).trialDuration = 15; %trial duration in seconds. 
 
 conditionInfo(1).motionType       = 'Brownian'; 
 %This is the amount of noise to add to the movement sequence
-conditionInfo(1).stepSigma    = 8;
+conditionInfo(1).stepSigma    = 10;
 conditionInfo(1).bounceOffEdges = true;
+conditionInfo(1).frameDuration = .10;
 %Initialize the 2nd condition to be the same as 1 and just change what we
 %want
 conditionInfo(2) = conditionInfo(1);
 conditionInfo(2).label            = 'Random'; 
 conditionInfo(2).motionType       = 'random'; 
-conditionInfo(2).positionSigma    = 80;
+conditionInfo(2).positionSigma    = conditionInfo(1).stepSigma;
 
 
 conditionInfo(3) = conditionInfo(1);
 conditionInfo(3).label            = 'Smooth'; 
 conditionInfo(3).motionType       = 'smooth'; 
-conditionInfo(3).accelSigma       = 1;
+conditionInfo(3).accelSigma       = 6;
 
